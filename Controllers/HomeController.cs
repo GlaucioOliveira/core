@@ -19,9 +19,9 @@ namespace webhook.Controllers
     {
         // GET: api/Home
         [HttpGet]
-        public IEnumerable<string> Get()
+        public string Get()
         {
-            return new string[] { "Gláucio", "Oliveira" };
+            return $"Server on - {DateTime.Now}";
         }
 
         // GET: api/Home/5
