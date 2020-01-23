@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using webhook.Models;
 
 namespace webhook
 {
@@ -18,6 +19,17 @@ namespace webhook
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            //get the set list of valid github Users
+            Util.githubUsers = configuration.GetSection("webhook")
+                                            .GetSection("github-user")
+                                            .GetChildren()
+                                            .Select(x=> x.Value).ToList();
+
+            Util.bashScript = configuration.GetSection("webhook")
+                                           .GetValue<string>("bash-script");
+
+            //Util.SecretKey = ""; // TODO: implement secret key validation, and check if the post is comming from github...
         }
 
         public IConfiguration Configuration { get; }

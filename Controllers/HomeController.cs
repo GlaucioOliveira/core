@@ -1,62 +1,52 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using webhook.Models;
 using System.Diagnostics;
+using webhook.Models;
 
 namespace webhook.Controllers
 {
-    //[Produces("application/json")]
     [Route("/")]    
     [ApiController]
     public class HomeController : ControllerBase
     {
-        // GET: api/Home
         [HttpGet]
         public string Get()
         {
-            return $"Server on - {DateTime.Now}";
+            return $"WebHook Server On - {DateTime.Now}";
         }
 
-        // GET: api/Home/5
-        [HttpGet("{id}", Name = "Get")]
-        public string Get(int id)
-        {
-            return "value";
-        }
-
-        // POST: api/Home
         [HttpPost]
         public void Post([FromBody] JsonElement json)
         {
-            var repository = json.GetProperty("repository");
-            var repositoryName = repository.GetProperty("name");
+            JsonElement repository;
+            JsonElement repositoryName;
+            JsonElement sender;
+            JsonElement senderLogin;
 
-            var sender = json.GetProperty("sender");
-            var senderLogin = sender.GetProperty("login");
+
+            json.TryGetProperty("repository", out repository);
+            if (repository.TryGetProperty("name", out repositoryName) == false) return;
+
+            json.TryGetProperty("sender", out sender);
+            if(sender.TryGetProperty("login", out senderLogin) == false) return;
 
             //if it's an authorized user...
-            if (senderLogin.ToString().ToLower() == "glauciooliveira")
+            if (Util.githubUsers.Contains(senderLogin.ToString().ToLower()))
             {
-                //update the repository by calling the script;
+                //update the repository by calling a bash script;
                 using (var process = new Process())
                 {
-                    process.StartInfo.FileName = @"/home/git/update_repository.sh";
+                    process.StartInfo.FileName = Util.bashScript;
                     process.StartInfo.ArgumentList.Add(repositoryName.GetString());
                     process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.UseShellExecute = false;
-
+                    
                     process.Start();
                 }
             }
 
-            //var payLoadObject = JsonSerializer.Deserialize<Payload>(json.ToString());
+            //keep a log of what was received from the req body
             System.IO.File.WriteAllText($"{AppContext.BaseDirectory}{DateTime.Now.ToString("yyyy-MM-dd_HHmmss")}.log", json.ToString());
         }
     }
