@@ -13,7 +13,7 @@ namespace webhook.Controllers
         [HttpGet]
         public string Get()
         {
-            return $"WebHook Server v 0.0.2 - Status: On - {DateTime.Now}\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
+            return $"WebHook Server v 0.0.2\n\nStatus: On - {DateTime.Now}\n\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
         }
 
         [HttpPost]
