@@ -21,7 +21,7 @@ namespace webhook.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "glaucio", "oliveira" };
+            return new string[] { "Gláucio", "Oliveira" };
         }
 
         // GET: api/Home/5
