@@ -44,11 +44,11 @@ namespace webhook.Controllers
             //if it's an authorized user...
             if (senderLogin.ToString().ToLower() == "glauciooliveira")
             {
-                //update the repository
+                //update the repository by calling the script;
                 using (var process = new Process())
                 {
-                    process.StartInfo.FileName = @"git";
-                    process.StartInfo.ArgumentList.Add("pull");
+                    process.StartInfo.FileName = @"/home/git/update_repository.sh";
+                    process.StartInfo.ArgumentList.Add(repositoryName.GetString());
                     process.StartInfo.CreateNoWindow = true;
                     process.StartInfo.UseShellExecute = false;
 
