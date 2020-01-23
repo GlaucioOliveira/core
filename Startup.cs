@@ -22,12 +22,19 @@ namespace webhook
 
             //get the set list of valid github Users
             Util.githubUsers = configuration.GetSection("webhook")
-                                            .GetSection("github-user")
+                                            .GetSection("github-allowed-user")
                                             .GetChildren()
                                             .Select(x=> x.Value).ToList();
 
             Util.bashScript = configuration.GetSection("webhook")
                                            .GetValue<string>("bash-script");
+
+            //fill the username and pwd of github for the authentication
+            Util.githubUserName = configuration.GetSection("webhook")
+                                           .GetValue<string>("github-username");
+
+            Util.githubUserPassword = configuration.GetSection("webhook")
+                               .GetValue<string>("github-password");
 
             //Util.SecretKey = ""; // TODO: implement secret key validation, and check if the post is comming from github...
         }

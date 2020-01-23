@@ -13,7 +13,7 @@ namespace webhook.Controllers
         [HttpGet]
         public string Get()
         {
-            return $"WebHook Server On - {DateTime.Now}\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
+            return $"WebHook Server v 0.0.2 - Status: On - {DateTime.Now}\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
         }
 
         [HttpPost]
@@ -35,11 +35,13 @@ namespace webhook.Controllers
             {
                 try
                 {
-                    //update the repository by calling a bash script;
+                    //update the repository by calling the bash script;
                     using (var process = new Process())
                     {
                         process.StartInfo.FileName = Util.bashScript;
                         process.StartInfo.ArgumentList.Add(repositoryName.GetString());
+                        process.StartInfo.ArgumentList.Add(Util.githubUserName);
+                        process.StartInfo.ArgumentList.Add(Util.githubUserPassword);
                         process.StartInfo.CreateNoWindow = true;
                         process.StartInfo.UseShellExecute = false;
 
@@ -54,7 +56,7 @@ namespace webhook.Controllers
                     }
                     catch
                     {
-
+                        //oops :|
                     }
                 }
             }
