@@ -1,6 +1,2 @@
-# core
-Test Repository to evaluate the webhook
-
-teste.
-
-@teste2
+# Web Hook
+Web Hook for .NET Core applications used for automation during commits through github repository.
