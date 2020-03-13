@@ -13,11 +13,30 @@ namespace webhook.Controllers
         [HttpGet]
         public string Get()
         {
-            return $"WebHook Server v 0.0.2\n\nStatus: On - {DateTime.Now}\n\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
+            return $"WebHook Server v 0.0.3\n\nStatus: On - {DateTime.Now}\n\n(c) Copyright G. Oliveira - {DateTime.Now.Year}";
         }
 
+        [Route("/webhook/{*nomescript}")]
         [HttpPost]
         public void Post([FromBody] JsonElement json)
+        {
+            processRequest(json);
+        }
+
+        private string getActionName()
+        {
+            try
+            {
+                string urlPath = HttpContext.Request.Path.Value.ToLower().Replace("/webhook/", "");
+                return $"{Util.bashDir}{urlPath}.sh";
+            }
+            catch
+            {
+                return Util.bashScript;
+            }
+        }
+
+        private void processRequest(JsonElement json)
         {
             JsonElement repository;
             JsonElement repositoryName;
@@ -38,7 +57,7 @@ namespace webhook.Controllers
                     //update the repository by calling the bash script;
                     using (var process = new Process())
                     {
-                        process.StartInfo.FileName = Util.bashScript;
+                        process.StartInfo.FileName = getActionName();
                         process.StartInfo.ArgumentList.Add(repositoryName.GetString());
                         process.StartInfo.ArgumentList.Add(Util.githubUserName);
                         process.StartInfo.ArgumentList.Add(Util.githubUserPassword);
